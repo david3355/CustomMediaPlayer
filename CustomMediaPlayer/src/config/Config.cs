@@ -6,10 +6,6 @@ using System.Windows.Forms;
 
 namespace CustomMediaPlayer
 {
-    enum ConfigKey { JumpTime, Topmost, LastOpened }
-    delegate void ConfigChange(ConfigKey Key);
-    public delegate void HotKeyHandler();
-
     class Config
     {
         private Config(Dictionary<string, Function> Functions)

@@ -49,7 +49,7 @@ namespace CustomMediaPlayer
             jmp.SetMediaEvents(MediaEnded, MediaOpened, PositionChanged, PlayChanged);
             if (JMediaPlayer.NowPlaying != String.Empty)
             {
-                AddToRecentlyOpen(JMediaPlayer.NowPlaying);
+                AddToRecentlyOpened(JMediaPlayer.NowPlaying);
                 btn_start.IsEnabled = true;
                 btn_start_Click(null, null);
             }
@@ -124,7 +124,7 @@ namespace CustomMediaPlayer
                 case ConfigKey.Topmost:
                 mainWindow.Topmost = Convert.ToBoolean(config.GetConfig(ConfigKey.Topmost)); break;
                 case ConfigKey.LastOpened:
-                AddToRecentlyOpen(config.GetConfig(ConfigKey.LastOpened).ToString()); break;
+                AddToRecentlyOpened(config.GetConfig(ConfigKey.LastOpened).ToString()); break;
             }
         }
 
@@ -227,11 +227,11 @@ namespace CustomMediaPlayer
                 JMediaPlayer.NowPlaying = ofd.FileName;
                 btn_start.IsEnabled = true;
                 mainWindow.Title = JMediaPlayer.FileName;
-                AddToRecentlyOpen(JMediaPlayer.NowPlaying);
+                AddToRecentlyOpened(JMediaPlayer.NowPlaying);
             }
         }
 
-        private void AddToRecentlyOpen(string FileName)
+        private void AddToRecentlyOpened(string FileName)
         {
             if (!menu_recently_opened.Items.Contains(FileName))
             {
