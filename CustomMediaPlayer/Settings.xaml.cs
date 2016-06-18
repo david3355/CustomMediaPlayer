@@ -26,15 +26,17 @@ namespace CustomMediaPlayer
         }
 
         private static List<Function> functions = new List<Function>();
+        private Config config;
 
         private void LoadSettings()
         {
+            config = Config.GetInstance;
             GlobalKeyboardHook.SignKeyDownHandler(KeyDownHandler);
             combo_functions.ItemsSource = functions;
             combo_keys.ItemsSource = Enum.GetValues(typeof(Forms.Keys));
 
-            check_topmost.IsChecked = (bool)Config.GetConfig(ConfigKey.Topmost);
-            int jt = (int)Config.GetConfig(ConfigKey.JumpTime);
+            check_topmost.IsChecked = (bool)Boolean.Parse(config.GetConfig(ConfigKey.Topmost).ToString());
+            int jt = int.Parse(config.GetConfig(ConfigKey.JumpTime).ToString());
             int sec = jt / 1000;
             if (jt % 1000 == 0)
             {
@@ -46,7 +48,7 @@ namespace CustomMediaPlayer
                 txt_jumptime.Text = jt.ToString();
                 combo_unit.SelectedIndex = 1;
             }
-            dgrid_hotkeys.ItemsSource = Config.HotKeys;
+            dgrid_hotkeys.ItemsSource = config.HotKeys;
         }
 
         public static void SignFunction(Function Function)
@@ -62,12 +64,12 @@ namespace CustomMediaPlayer
 
         private void check_topmost_Checked(object sender, RoutedEventArgs e)
         {
-            Config.SetConfig(ConfigKey.Topmost, true);
+            config.SetConfig(ConfigKey.Topmost, true);
         }
 
         private void check_topmost_Unchecked(object sender, RoutedEventArgs e)
         {
-            Config.SetConfig(ConfigKey.Topmost, false);
+            config.SetConfig(ConfigKey.Topmost, false);
         }
 
         private void btn_jtSave_Click(object sender, RoutedEventArgs e)
@@ -77,7 +79,7 @@ namespace CustomMediaPlayer
             {
                 case 0: jt *= 1000; break;
             }
-            Config.SetConfig(ConfigKey.JumpTime, jt);
+            config.SetConfig(ConfigKey.JumpTime, jt);
         }
 
         private void btn_add_hotkey_Click(object sender, RoutedEventArgs e)
@@ -85,7 +87,7 @@ namespace CustomMediaPlayer
             if (combo_functions.SelectedIndex != -1 && combo_keys.SelectedIndex != -1)
             {
                 HotKey hk = new HotKey((Forms.Keys)combo_keys.SelectedItem, functions[combo_functions.SelectedIndex]);
-                if (!Config.AddHotKeyHandler(hk)) return;
+                if (!config.AddHotKeyHandler(hk)) return;
                 dgrid_hotkeys.Items.Refresh();
             }
         }
@@ -93,7 +95,7 @@ namespace CustomMediaPlayer
         private void btn_delete_hotkey_Click(object sender, RoutedEventArgs e)
         {
             HotKey hk = (HotKey)dgrid_hotkeys.Items[dgrid_hotkeys.SelectedIndex];
-            Config.RemoveHotKeyHandler(hk);
+            config.RemoveHotKeyHandler(hk);
             dgrid_hotkeys.Items.Refresh();
         }
 
@@ -136,18 +138,22 @@ namespace CustomMediaPlayer
 
     public class Function
     {
-        public Function(HotKeyHandler Handler, string Name)
+        public Function(HotKeyHandler Handler, string FunctionText)
         {
-            KeyHandler = Handler;
-            FunctionName = Name;
+            this.KeyHandler = Handler;
+            this.FunctionText = FunctionText;
         }
 
         public HotKeyHandler KeyHandler { get; set; }
-        public string FunctionName { get; set; }
+        public string FunctionText { get; set; }
+        public String FunctionName
+        {
+            get { return this.KeyHandler.Method.Name; }
+        }
 
         public override string ToString()
         {
-            return FunctionName;
+            return FunctionText;
         }
 
         public override bool Equals(object obj)

@@ -56,7 +56,7 @@ namespace CustomMediaPlayer
                 JMediaPlayer jmp = JMediaPlayer.GetJMediaPlayer();
                 if (jmp.Playing) jmp.Stop();
                 JMediaPlayer.NowPlaying = args[0];
-                Config.SetConfig(ConfigKey.LastOpened, JMediaPlayer.NowPlaying);
+                Config.GetInstance.SetConfig(ConfigKey.LastOpened, JMediaPlayer.NowPlaying);
                 return true;
             }
             return false;

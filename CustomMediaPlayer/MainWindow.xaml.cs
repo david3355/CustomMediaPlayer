@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using Microsoft.Win32;
 using Forms = System.Windows.Forms;
 using System.IO;
+using System.Reflection;
 
 namespace CustomMediaPlayer
 {
@@ -34,12 +35,17 @@ namespace CustomMediaPlayer
         private GlobalKeyboardHook hook;
         private const int interval = 10;
         private bool changeAllowed;
+        private Config config;
+
+        private Dictionary<string, Function> functions = new Dictionary<string, Function>();
 
         private void Init()
         {
+            config = Config.GetInstanceInit(functions);
             changeAllowed = true;
+            SetFunctions();
             jmp = JMediaPlayer.GetJMediaPlayer();
-            Config.SignUp(ConfigChanged);
+            config.SignUp(ConfigChanged);
             jmp.SetMediaEvents(MediaEnded, MediaOpened, PositionChanged, PlayChanged);
             if (JMediaPlayer.NowPlaying != String.Empty)
             {
@@ -54,22 +60,44 @@ namespace CustomMediaPlayer
             hook.Hook();
         }
 
+        private void SetFunctions()
+        {
+            Function f1 = new Function(PlayPause, App.Current.TryFindResource("btn_play").ToString());
+            Function f2 = new Function(JumpBackward, App.Current.TryFindResource("jmp_back").ToString());
+            Function f3 = new Function(StopPlaying, App.Current.TryFindResource("btn_stop").ToString());
+            Function f4 = new Function(JumpForward, App.Current.TryFindResource("jmp_fwd").ToString());
+            Function f5 = new Function(IncreasePlaySpeed, App.Current.TryFindResource("inc_playspeed").ToString());
+            Function f6 = new Function(DecreasePlaySpeed, App.Current.TryFindResource("decr_playspeed").ToString());
+            Function f7 = new Function(SetPlaySpeedNormal, App.Current.TryFindResource("normal_playspeed").ToString());
+            AddFunctions(f1, f2, f3, f4, f5, f6, f7);
+        }
+
+        private void AddFunctions(params Function[] functionsToAdd)
+        {
+            foreach (Function f in functionsToAdd)
+            {
+                functions.Add(f.FunctionName, f);
+                Settings.SignFunction(f);
+            }
+        }
+
         private void SetConfig()
         {
-            Config.SetConfig(ConfigKey.JumpTime, 2000);
-            Config.SetConfig(ConfigKey.Topmost, false);
-            Function f1 = new Function(PlayPause, "Lejátszás gomb");
-            Function f2 = new Function(JumpBackward, "Ugrás hátrafelé");
-            Settings.SignFunction(f1);
-            Settings.SignFunction(new Function(StopPlaying, "Stop gomb"));
-            Settings.SignFunction(f2);
-            Settings.SignFunction(new Function(JumpForward, "Ugrás előre"));
-            Settings.SignFunction(new Function(IncreasePlaySpeed, "Lejátszási sebesség növelése"));
-            Settings.SignFunction(new Function(DecreasePlaySpeed, "Lejátszási sebesség csökkentése"));
-            Settings.SignFunction(new Function(SetPlaySpeedNormal, "Normál lejátszási sebesség"));
+            bool configLoaded = config.LoadConfig();
+            if (!configLoaded)
+            {
+                SetDefaultConfig();
+            }
+        }
 
-            Config.AddHotKeyHandler(new HotKey(Forms.Keys.LControlKey, f1));
-            Config.AddHotKeyHandler(new HotKey(Forms.Keys.RControlKey, f2));
+        private void SetDefaultConfig()
+        {
+            config.SetConfig(ConfigKey.JumpTime, 2000);
+            config.SetConfig(ConfigKey.Topmost, false);
+            HotKeyHandler playpause = PlayPause;
+            HotKeyHandler jumpbck = JumpBackward;
+            config.AddHotKeyHandler(new HotKey(Forms.Keys.LControlKey, functions[playpause.Method.Name]));
+            config.AddHotKeyHandler(new HotKey(Forms.Keys.RControlKey, functions[jumpbck.Method.Name]));
         }
 
         public void btn_start_Click(object sender, RoutedEventArgs e)
@@ -92,11 +120,11 @@ namespace CustomMediaPlayer
             switch (Key)
             {
                 case ConfigKey.JumpTime:
-                jmp.JumpTimeMS = Convert.ToInt32(Config.GetConfig(ConfigKey.JumpTime)); break;
+                jmp.JumpTimeMS = Convert.ToInt32(config.GetConfig(ConfigKey.JumpTime)); break;
                 case ConfigKey.Topmost:
-                mainWindow.Topmost = Convert.ToBoolean(Config.GetConfig(ConfigKey.Topmost)); break;
+                mainWindow.Topmost = Convert.ToBoolean(config.GetConfig(ConfigKey.Topmost)); break;
                 case ConfigKey.LastOpened:
-                AddToRecentlyOpen(Config.GetConfig(ConfigKey.LastOpened).ToString()); break;
+                AddToRecentlyOpen(config.GetConfig(ConfigKey.LastOpened).ToString()); break;
             }
         }
 
@@ -332,9 +360,9 @@ namespace CustomMediaPlayer
 
         private void KeyDownHandler(object sender, Forms.KeyEventArgs e)
         {
-            var hotkeys = Config.HotKeys;
+            var hotkeys = config.HotKeys;
             Forms.Keys key = e.KeyCode;
-            HotKeyHandler handler = Config.GetHandler(key);
+            HotKeyHandler handler = config.GetHandler(key);
             if (handler != null) handler();
         }
 

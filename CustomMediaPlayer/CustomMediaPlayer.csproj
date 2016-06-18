@@ -63,6 +63,7 @@
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
     <Compile Include="src\Config.cs" />
+    <Compile Include="src\ConfigSaveManager.cs" />
     <Compile Include="Video.xaml.cs">
       <DependentUpon>Video.xaml</DependentUpon>
     </Compile>
@@ -92,6 +93,10 @@
     <Page Include="res\JSlideRes.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="res\Strings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Settings.xaml">
       <SubType>Designer</SubType>
