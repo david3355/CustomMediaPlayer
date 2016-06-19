@@ -53,6 +53,11 @@ namespace CustomMediaPlayer
             set { mp.Position = value; }
         }
 
+        public TimeSpan Duration
+        {
+            get { return mp.NaturalDuration.TimeSpan; }
+        }
+
         public double MediaLengthInMS
         {
             get { return mp.NaturalDuration.TimeSpan.TotalMilliseconds; }

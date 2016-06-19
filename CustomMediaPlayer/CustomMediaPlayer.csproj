@@ -71,6 +71,8 @@
     <Compile Include="src\hotkey_functions\HotKey.cs" />
     <Compile Include="src\playing\IntelligentPlayingManager.cs" />
     <Compile Include="src\playing\PlayingEvents.cs" />
+    <Compile Include="src\title\TitleSetter.cs" />
+    <Compile Include="src\title\TitleAssembler.cs" />
     <Compile Include="Video.xaml.cs">
       <DependentUpon>Video.xaml</DependentUpon>
     </Compile>

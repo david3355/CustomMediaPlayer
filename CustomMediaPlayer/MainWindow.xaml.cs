@@ -37,6 +37,7 @@ namespace CustomMediaPlayer
         private bool changeAllowed;
         private Config config;
         private IntelligentPlayingManager intelligentPlayingManager;
+        private TitleAssembler title;
 
         private Dictionary<string, Function> functions = new Dictionary<string, Function>();
 
@@ -44,6 +45,7 @@ namespace CustomMediaPlayer
         {
             config = Config.GetInstanceInit(functions);
             intelligentPlayingManager = new IntelligentPlayingManager();
+            title = new TitleAssembler(SetTitle);
             changeAllowed = true;
             SetFunctions();
             jmp = JMediaPlayer.GetJMediaPlayer();
@@ -131,6 +133,11 @@ namespace CustomMediaPlayer
             TimeLabel.Content = hour + ':' + min + ':' + sec;
         }
 
+        private void SetTitle(String Title)
+        {
+            this.Title = Title;
+        }
+
         private void ConfigChanged(ConfigKey Key)
         {
             switch (Key)
@@ -171,7 +178,11 @@ namespace CustomMediaPlayer
 
         private void PositionChanged(object sender, EventArgs e)
         {
-            if (changeAllowed) slider_time.Value = jmp.Position.TotalMilliseconds;
+            if (changeAllowed)
+            {
+                slider_time.Value = jmp.Position.TotalMilliseconds;
+                title.PlayerTimeChanged(jmp.Position, jmp.Duration);
+            }
         }
 
         private void PlayChanged(object sender, EventArgs e)
@@ -182,16 +193,16 @@ namespace CustomMediaPlayer
 
         private void PlayStarted()
         {
-            img_play.Source = new BitmapImage(new Uri(@"/img/pause.png", UriKind.Relative));
-            this.Title = '\u25b6' + " " + JMediaPlayer.FileName;
+            img_play.Source = new BitmapImage(new Uri(@"/img/pause.png", UriKind.Relative));            
             intelligentPlayingManager.PlayingStarted();
+            title.PlayStarted();
         }
 
         private void PlayPaused()
         {
-            img_play.Source = new BitmapImage(new Uri(@"/img/play2.png", UriKind.Relative));
-            this.Title = JMediaPlayer.FileName;
+            img_play.Source = new BitmapImage(new Uri(@"/img/play2.png", UriKind.Relative));            
             intelligentPlayingManager.PlayingPaused();
+            title.PlayPaused();
         }
 
         private void AllowSlideChange()
