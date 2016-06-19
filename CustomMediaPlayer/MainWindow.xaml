@@ -12,7 +12,7 @@
     </Window.Background>
 
     <DockPanel LastChildFill="True">
-        <Menu Name="menu" DockPanel.Dock="Top" Height="25">
+        <Menu Name="menu" DockPanel.Dock="Top" Height="20">
             <MenuItem Header="Médialejátszó">
                 <MenuItem Header="Fájl megnyitása" Click="MenuItem_Click">
                     <MenuItem.Icon>
