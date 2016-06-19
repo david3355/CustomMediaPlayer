@@ -13,5 +13,7 @@ namespace CustomMediaPlayer
         void JumpedBackward(int MilliSecond);
         void JumpedForward(int MilliSecond);
         void KeyPressed(Keys Key);
+        void UserStartsPlaying();
+        void UserPausesPlaying();
     }
 }

@@ -1,21 +1,20 @@
 ﻿<Window x:Class="CustomMediaPlayer.Settings"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Beállítások" Height="250" Width="300" Icon="img/settings.png">
+        Title="Beállítások" Height="250" Width="300" Icon="img/settings.png" Closing="Window_Closing">
     <Grid>
         <TabControl>
             <TabItem Header="Lejátszás">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Label>Ugrási idő:</Label>
-                        <TextBox Name="txt_jumptime" Width="50" TextAlignment="Center" Margin="3"></TextBox>
-                        <ComboBox Name="combo_unit" Margin="3" SelectedIndex="0">
+                        <TextBox Name="txt_jumptime" Width="50" TextAlignment="Center" Margin="3" TextChanged="txt_jumptime_TextChanged"></TextBox>
+                        <ComboBox Name="combo_unit" Margin="3" SelectedIndex="0" SelectionChanged="combo_unit_SelectionChanged">
                             <ComboBox.Items>
                                 <ComboBoxItem>sec</ComboBoxItem>
                                 <ComboBoxItem>millisec</ComboBoxItem>
                             </ComboBox.Items>
                         </ComboBox>
-                        <Button Name="btn_jtSave" Style="{x:Null}" Margin="3" Padding="2" Click="btn_jtSave_Click">Mentés</Button>
                     </StackPanel>
                 </StackPanel>
             </TabItem>
@@ -53,8 +52,19 @@
             <TabItem Header="Intelligens lejátszás">
                 <StackPanel Orientation="Vertical" VerticalAlignment="Top" Margin="5">
                     <CheckBox Name="check_intelligent_playing" Height="25" ToolTip="A lejátszás magától megáll és újraindul a megadott beállítások alapján" Checked="check_intelligent_playing_Checked" Unchecked="check_intelligent_playing_Unchecked">Intelligens lejátszás</CheckBox>
-                    <GroupBox Header="Intelligens lejátszás">
-                        
+                    <GroupBox Name="group_intellientplay" Header="Intelligens lejátszás">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0, 5, 0, 0">
+                                <Label>Szünet:</Label>
+                                <TextBox Name="txt_pausetime" Width="50" TextAlignment="Center" Margin="3" TextChanged="txt_pausetime_TextChanged" ToolTip="Gépeléskor minden billentyű leütése után ennyi idő elteltével indul újra a lejátszás"></TextBox>
+                                <ComboBox Name="combo_pauseunit" Margin="3" SelectedIndex="1" SelectionChanged="combo_pauseunit_SelectionChanged"  >
+                                    <ComboBox.Items>
+                                        <ComboBoxItem>sec</ComboBoxItem>
+                                        <ComboBoxItem>millisec</ComboBoxItem>
+                                    </ComboBox.Items>
+                                </ComboBox>
+                            </StackPanel>
+                        </StackPanel>
                     </GroupBox>
                 </StackPanel>
             </TabItem>

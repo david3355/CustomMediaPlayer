@@ -97,7 +97,9 @@ namespace CustomMediaPlayer
         private void SetDefaultConfig()
         {
             config.SetConfig(ConfigKey.JumpTime, 2000);
+            config.SetConfig(ConfigKey.PauseTime, 1000);
             config.SetConfig(ConfigKey.Topmost, false);
+            config.SetConfig(ConfigKey.IntelligentPlaying, true);
             HotKeyHandler playpause = PlayPause;
             HotKeyHandler jumpbck = JumpBackward;
             config.AddHotKeyHandler(new HotKey(Forms.Keys.LControlKey, functions[playpause.Method.Name]));
@@ -109,8 +111,16 @@ namespace CustomMediaPlayer
         public void btn_start_Click(object sender, RoutedEventArgs e)
         {
             if (JMediaPlayer.NowPlaying == String.Empty) return;
-            if (!jmp.Playing) jmp.Play();
-            else jmp.Pause();
+            if (!jmp.Playing)
+            {
+                jmp.Play();
+                intelligentPlayingManager.UserStartsPlaying();
+            }
+            else
+            {
+                jmp.Pause();
+                intelligentPlayingManager.UserPausesPlaying();
+            }
         }
 
         private void SetTime(Label TimeLabel, TimeSpan Value)
@@ -131,6 +141,10 @@ namespace CustomMediaPlayer
                     mainWindow.Topmost = Convert.ToBoolean(config.GetConfig(ConfigKey.Topmost)); break;
                 case ConfigKey.LastOpened:
                     AddToRecentlyOpened(config.GetConfig(ConfigKey.LastOpened).ToString()); break;
+                case ConfigKey.PauseTime:
+                    intelligentPlayingManager.SetPauseTime(Convert.ToInt32(config.GetConfig(ConfigKey.PauseTime))); break;
+                case ConfigKey.IntelligentPlaying:
+                    intelligentPlayingManager.Enabled = Convert.ToBoolean(config.GetConfig(ConfigKey.IntelligentPlaying)); break;
             }
         }
 

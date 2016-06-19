@@ -5,5 +5,5 @@ using System.Text;
 
 namespace CustomMediaPlayer
 {
-    enum ConfigKey { JumpTime, Topmost, LastOpened }
+    enum ConfigKey { JumpTime, Topmost, LastOpened, PauseTime, IntelligentPlaying }
 }
