@@ -62,8 +62,15 @@
     <Compile Include="Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="src\Config.cs" />
-    <Compile Include="src\ConfigSaveManager.cs" />
+    <Compile Include="src\config\Config.cs" />
+    <Compile Include="src\config\ConfigChange.cs" />
+    <Compile Include="src\config\ConfigKey.cs" />
+    <Compile Include="src\config\ConfigSaveManager.cs" />
+    <Compile Include="src\config\HotKeyHandler.cs" />
+    <Compile Include="src\hotkey_functions\Function.cs" />
+    <Compile Include="src\hotkey_functions\HotKey.cs" />
+    <Compile Include="src\playing\IntelligentPlayingManager.cs" />
+    <Compile Include="src\playing\PlayingEvents.cs" />
     <Compile Include="Video.xaml.cs">
       <DependentUpon>Video.xaml</DependentUpon>
     </Compile>
@@ -164,6 +171,7 @@
   <ItemGroup>
     <Resource Include="img\recently_opened.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

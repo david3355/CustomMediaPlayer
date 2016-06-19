@@ -110,5 +110,15 @@ namespace CustomMediaPlayer
             e.Handled = true;   // Így az esemény lekezelődik, és nem adja tovább automatikusan a lenyomott billentyűt, különben a comboboxban név alapján keresne
         }
 
+        private void check_intelligent_playing_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void check_intelligent_playing_Unchecked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
     }
 }

@@ -36,12 +36,14 @@ namespace CustomMediaPlayer
         private const int interval = 10;
         private bool changeAllowed;
         private Config config;
+        private IntelligentPlayingManager intelligentPlayingManager;
 
         private Dictionary<string, Function> functions = new Dictionary<string, Function>();
 
         private void Init()
         {
             config = Config.GetInstanceInit(functions);
+            intelligentPlayingManager = new IntelligentPlayingManager();
             changeAllowed = true;
             SetFunctions();
             jmp = JMediaPlayer.GetJMediaPlayer();
@@ -59,6 +61,8 @@ namespace CustomMediaPlayer
             SetConfig();
             hook.Hook();
         }
+
+        #region Config
 
         private void SetFunctions()
         {
@@ -100,6 +104,8 @@ namespace CustomMediaPlayer
             config.AddHotKeyHandler(new HotKey(Forms.Keys.RControlKey, functions[jumpbck.Method.Name]));
         }
 
+        #endregion
+
         public void btn_start_Click(object sender, RoutedEventArgs e)
         {
             if (JMediaPlayer.NowPlaying == String.Empty) return;
@@ -120,11 +126,11 @@ namespace CustomMediaPlayer
             switch (Key)
             {
                 case ConfigKey.JumpTime:
-                jmp.JumpTimeMS = Convert.ToInt32(config.GetConfig(ConfigKey.JumpTime)); break;
+                    jmp.JumpTimeMS = Convert.ToInt32(config.GetConfig(ConfigKey.JumpTime)); break;
                 case ConfigKey.Topmost:
-                mainWindow.Topmost = Convert.ToBoolean(config.GetConfig(ConfigKey.Topmost)); break;
+                    mainWindow.Topmost = Convert.ToBoolean(config.GetConfig(ConfigKey.Topmost)); break;
                 case ConfigKey.LastOpened:
-                AddToRecentlyOpened(config.GetConfig(ConfigKey.LastOpened).ToString()); break;
+                    AddToRecentlyOpened(config.GetConfig(ConfigKey.LastOpened).ToString()); break;
             }
         }
 
@@ -151,21 +157,27 @@ namespace CustomMediaPlayer
 
         private void PositionChanged(object sender, EventArgs e)
         {
-            if(changeAllowed) slider_time.Value = jmp.Position.TotalMilliseconds;
+            if (changeAllowed) slider_time.Value = jmp.Position.TotalMilliseconds;
         }
 
         private void PlayChanged(object sender, EventArgs e)
         {
-            if (!jmp.Playing) // Pause playing
-            {
-                img_play.Source = new BitmapImage(new Uri(@"/img/play2.png", UriKind.Relative));
-                this.Title = JMediaPlayer.FileName;
-            }
-            else // Start playing
-            {
-                img_play.Source = new BitmapImage(new Uri(@"/img/pause.png", UriKind.Relative));
-                this.Title = '\u25b6' + " " + JMediaPlayer.FileName;
-            }
+            if (!jmp.Playing) PlayPaused();
+            else PlayStarted();
+        }
+
+        private void PlayStarted()
+        {
+            img_play.Source = new BitmapImage(new Uri(@"/img/pause.png", UriKind.Relative));
+            this.Title = '\u25b6' + " " + JMediaPlayer.FileName;
+            intelligentPlayingManager.PlayingStarted();
+        }
+
+        private void PlayPaused()
+        {
+            img_play.Source = new BitmapImage(new Uri(@"/img/play2.png", UriKind.Relative));
+            this.Title = JMediaPlayer.FileName;
+            intelligentPlayingManager.PlayingPaused();
         }
 
         private void AllowSlideChange()
@@ -264,7 +276,7 @@ namespace CustomMediaPlayer
             }
         }
 
-       
+
         private void btn_stop_Click(object sender, RoutedEventArgs e)
         {
             if (JMediaPlayer.NowPlaying == String.Empty) return;
@@ -314,12 +326,14 @@ namespace CustomMediaPlayer
         {
             jmp.JumpBwd();
             slider_time.Value -= jmp.JumpTimeMS;
+            intelligentPlayingManager.JumpedBackward(jmp.JumpTimeMS);
         }
 
         private void btn_next_Click(object sender, RoutedEventArgs e)
         {
             jmp.JumpFwd();
             slider_time.Value += jmp.JumpTimeMS; ;
+            intelligentPlayingManager.JumpedForward(jmp.JumpTimeMS);
         }
 
         private void mainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -362,6 +376,7 @@ namespace CustomMediaPlayer
         {
             var hotkeys = config.HotKeys;
             Forms.Keys key = e.KeyCode;
+            intelligentPlayingManager.KeyPressed(key);
             HotKeyHandler handler = config.GetHandler(key);
             if (handler != null) handler();
         }
@@ -405,6 +420,6 @@ namespace CustomMediaPlayer
 
         #endregion
 
-        
-    }    
+
+    }
 }

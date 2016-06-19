@@ -50,6 +50,14 @@
                     <CheckBox Name="check_topmost" Height="25" ToolTip="A lejátszó ablaka lesz mindig előtérben, kitakarva az alatta lévő ablakokat." Checked="check_topmost_Checked" Unchecked="check_topmost_Unchecked">Előtérben</CheckBox>
                 </StackPanel>
             </TabItem>
+            <TabItem Header="Intelligens lejátszás">
+                <StackPanel Orientation="Vertical" VerticalAlignment="Top" Margin="5">
+                    <CheckBox Name="check_intelligent_playing" Height="25" ToolTip="A lejátszás magától megáll és újraindul a megadott beállítások alapján" Checked="check_intelligent_playing_Checked" Unchecked="check_intelligent_playing_Unchecked">Intelligens lejátszás</CheckBox>
+                    <GroupBox Header="Intelligens lejátszás">
+                        
+                    </GroupBox>
+                </StackPanel>
+            </TabItem>
         </TabControl>
     </Grid>
 </Window>

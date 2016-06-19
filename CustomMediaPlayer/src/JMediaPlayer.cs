@@ -113,6 +113,7 @@ namespace CustomMediaPlayer
 
         public void Play()
         {
+            if (nowPlaying == String.Empty) return;
             mp.Play();
             StartTimer();
             playing = true;
@@ -121,6 +122,7 @@ namespace CustomMediaPlayer
 
         public void Stop()
         {
+            if (nowPlaying == String.Empty) return;
             mp.Stop();
             StopTimer();
             playing = false;
@@ -129,6 +131,7 @@ namespace CustomMediaPlayer
 
         public void Pause()
         {
+            if (nowPlaying == String.Empty) return;
             mp.Pause();
             StopTimer();
             playing = false;
