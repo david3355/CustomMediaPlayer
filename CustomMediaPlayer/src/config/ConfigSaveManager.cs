@@ -13,14 +13,14 @@ namespace CustomMediaPlayer
     {
         public ConfigSaveManager(string FilePath, Dictionary<string, Function> Functions)
         {
-            xmlFile = FilePath;
+            configPath = AppDomain.CurrentDomain.BaseDirectory + FilePath;
             functions = Functions;
             document = new XmlDocument();
             bool documentLoaded = LoadXMLDocument();
             if (!documentLoaded) CreateXmlDatabase();
         }
 
-        private string xmlFile;
+        private string configPath;
         private XmlDocument document;
 
         private const string TAG_ROOT = "config";
@@ -30,14 +30,14 @@ namespace CustomMediaPlayer
         private const string TAG_KEY = "key";
         private const string TAG_FUNCTION = "function";
 
-        private Dictionary<string, Function> functions;
+        private Dictionary<string, Function> functions;       
 
         public bool LoadXMLDocument()
         {
             try
             {
-                if (!File.Exists(xmlFile) || File.ReadAllText(xmlFile, Encoding.Default) == String.Empty) return false;
-                document.Load(xmlFile);
+                if (!File.Exists(configPath) || File.ReadAllText(configPath, Encoding.Default) == String.Empty) return false;
+                document.Load(configPath);
                 return true;
             }
             catch { return false; }
@@ -45,14 +45,14 @@ namespace CustomMediaPlayer
 
         public void CreateXmlDatabase()
         {
-            if (File.Exists(xmlFile) && File.ReadAllText(xmlFile, Encoding.Default) != String.Empty) return;
+            if (File.Exists(configPath) && File.ReadAllText(configPath, Encoding.Default) != String.Empty) return;
             XmlElement root = document.CreateElement(TAG_ROOT);
             XmlElement hotkeys = document.CreateElement(TAG_HOTKEYS);
             XmlElement history = document.CreateElement(TAG_HISTORY);
             root.AppendChild(hotkeys);
             root.AppendChild(history);
             document.AppendChild(root);
-            document.Save(xmlFile);
+            document.Save(configPath);
         }
 
         private void CreateOrModifyConfig(String Tag, String Value)
@@ -70,7 +70,7 @@ namespace CustomMediaPlayer
             }
             conf.InnerText = Value;
             root.AppendChild(conf);
-            document.Save(xmlFile);
+            document.Save(configPath);
         }
 
 
@@ -99,7 +99,7 @@ namespace CustomMediaPlayer
             hotkey.AppendChild(key);
             hotkey.AppendChild(function);
             hotkeys.AppendChild(hotkey);
-            document.Save(xmlFile);
+            document.Save(configPath);
         }
 
         public void RemoveHotKey(HotKey HotKeyHandler)
@@ -114,7 +114,7 @@ namespace CustomMediaPlayer
                     hotkey.ParentNode.RemoveChild(hotkey);
                 }
             }
-            document.Save(xmlFile);
+            document.Save(configPath);
         }
 
         public List<HotKey> GetHotKeys()

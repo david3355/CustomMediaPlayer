@@ -42,7 +42,7 @@ namespace CustomMediaPlayer
         private Dictionary<string, Function> functions = new Dictionary<string, Function>();
 
         private void Init()
-        {
+        {            
             config = Config.GetInstanceInit(functions);
             intelligentPlayingManager = new IntelligentPlayingManager();
             title = new TitleAssembler(SetTitle);
@@ -53,7 +53,7 @@ namespace CustomMediaPlayer
             jmp.SetMediaEvents(MediaEnded, MediaOpened, PositionChanged, PlayChanged);
             if (JMediaPlayer.NowPlaying != String.Empty)
             {
-                AddToRecentlyOpened(JMediaPlayer.NowPlaying);
+                Config.GetInstance.SetConfig(ConfigKey.LastOpened, JMediaPlayer.NowPlaying);
                 btn_start.IsEnabled = true;
                 btn_start_Click(null, null);
             }
@@ -62,7 +62,7 @@ namespace CustomMediaPlayer
             hook = new GlobalKeyboardHook(KeyDownHandler);
             SetConfig();
             hook.Hook();
-        }
+        }      
 
         #region Config
 
@@ -104,8 +104,8 @@ namespace CustomMediaPlayer
             config.SetConfig(ConfigKey.IntelligentPlaying, true);
             HotKeyHandler playpause = PlayPause;
             HotKeyHandler jumpbck = JumpBackward;
-            config.AddHotKeyHandler(new HotKey(Forms.Keys.LControlKey, functions[playpause.Method.Name]));
-            config.AddHotKeyHandler(new HotKey(Forms.Keys.RControlKey, functions[jumpbck.Method.Name]));
+            config.AddHotKeyHandler(new HotKey(Forms.Keys.RControlKey, functions[playpause.Method.Name]));
+            config.AddHotKeyHandler(new HotKey(Forms.Keys.LControlKey, functions[jumpbck.Method.Name]));
         }
 
         #endregion
@@ -193,6 +193,7 @@ namespace CustomMediaPlayer
 
         private void PlayStarted()
         {
+            if (!btn_start.IsEnabled) btn_start.IsEnabled = true;
             img_play.Source = new BitmapImage(new Uri(@"/img/pause.png", UriKind.Relative));            
             intelligentPlayingManager.PlayingStarted();
             title.PlayStarted();
@@ -256,7 +257,7 @@ namespace CustomMediaPlayer
             else img_mute.Source = new BitmapImage(new Uri("img/volon.png", UriKind.Relative));
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private void menuitem_openfile_Click(object sender, RoutedEventArgs e)
         {
             bool? ok = ofd.ShowDialog();
             if (ok == true)

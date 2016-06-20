@@ -45,7 +45,6 @@ namespace CustomMediaPlayer
                 MainWindow.Topmost = true;
                 MainWindow.Topmost = false;
             }
-
             return true;
         }
 
@@ -55,11 +54,10 @@ namespace CustomMediaPlayer
             {
                 JMediaPlayer jmp = JMediaPlayer.GetJMediaPlayer();
                 if (jmp.Playing) jmp.Stop();
-                JMediaPlayer.NowPlaying = args[0];
-                Config.GetInstance.SetConfig(ConfigKey.LastOpened, JMediaPlayer.NowPlaying);
+                JMediaPlayer.NowPlaying = args[0];                
                 return true;
             }
             return false;
-        }
+        }        
     }
 }
