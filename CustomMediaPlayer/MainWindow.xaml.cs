@@ -50,6 +50,7 @@ namespace CustomMediaPlayer
             SetFunctions();
             jmp = JMediaPlayer.GetJMediaPlayer();
             config.SignUp(ConfigChanged);
+            SetConfig();
             jmp.SetMediaEvents(MediaEnded, MediaOpened, PositionChanged, PlayChanged);
             if (JMediaPlayer.NowPlaying != String.Empty)
             {
@@ -59,8 +60,7 @@ namespace CustomMediaPlayer
             }
             ofd = new OpenFileDialog();
             slide_volume.Value = 50;
-            hook = new GlobalKeyboardHook(KeyDownHandler);
-            SetConfig();
+            hook = new GlobalKeyboardHook(KeyDownHandler);            
             hook.Hook();
         }      
 
