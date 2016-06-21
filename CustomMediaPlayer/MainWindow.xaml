@@ -25,7 +25,7 @@
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
-            <MenuItem Header="Eszközök" Click="MenuItem_Click_1" >
+            <MenuItem Name="menuitem_settings" Header="Eszközök" Click="menuitem_settings_Click" >
                 <MenuItem Header="Beállítások" >
                     <MenuItem.Icon>
                         <Image Height="22" Source="img/settings.png" />

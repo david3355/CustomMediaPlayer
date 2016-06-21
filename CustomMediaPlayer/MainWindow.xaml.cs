@@ -42,7 +42,7 @@ namespace CustomMediaPlayer
         private Dictionary<string, Function> functions = new Dictionary<string, Function>();
 
         private void Init()
-        {            
+        {
             config = Config.GetInstanceInit(functions);
             intelligentPlayingManager = new IntelligentPlayingManager();
             title = new TitleAssembler(SetTitle);
@@ -54,15 +54,14 @@ namespace CustomMediaPlayer
             jmp.SetMediaEvents(MediaEnded, MediaOpened, PositionChanged, PlayChanged);
             if (JMediaPlayer.NowPlaying != String.Empty)
             {
-                Config.GetInstance.SetConfig(ConfigKey.LastOpened, JMediaPlayer.NowPlaying);
                 btn_start.IsEnabled = true;
                 btn_start_Click(null, null);
             }
             ofd = new OpenFileDialog();
             slide_volume.Value = 50;
-            hook = new GlobalKeyboardHook(KeyDownHandler);            
+            hook = new GlobalKeyboardHook(KeyDownHandler);
             hook.Hook();
-        }      
+        }
 
         #region Config
 
@@ -164,6 +163,7 @@ namespace CustomMediaPlayer
             //}
             slider_time.Maximum = jmp.MediaLengthInMS;
             SetTime(label_fulltime, new TimeSpan(0, 0, 0, 0, (int)jmp.MediaLengthInMS));
+            config.SetConfig(ConfigKey.LastOpened, JMediaPlayer.NowPlaying);
         }
 
         private void MediaEnded(object sender, EventArgs e)
@@ -181,7 +181,7 @@ namespace CustomMediaPlayer
             if (changeAllowed)
             {
                 slider_time.Value = jmp.Position.TotalMilliseconds;
-                title.PlayerTimeChanged(jmp.Position, jmp.Duration);
+                if (jmp.MediaOpened) title.PlayerTimeChanged(jmp.Position, jmp.Duration);
             }
         }
 
@@ -194,14 +194,14 @@ namespace CustomMediaPlayer
         private void PlayStarted()
         {
             if (!btn_start.IsEnabled) btn_start.IsEnabled = true;
-            img_play.Source = new BitmapImage(new Uri(@"/img/pause.png", UriKind.Relative));            
+            img_play.Source = new BitmapImage(new Uri(@"/img/pause.png", UriKind.Relative));
             intelligentPlayingManager.PlayingStarted();
             title.PlayStarted();
         }
 
         private void PlayPaused()
         {
-            img_play.Source = new BitmapImage(new Uri(@"/img/play2.png", UriKind.Relative));            
+            img_play.Source = new BitmapImage(new Uri(@"/img/play2.png", UriKind.Relative));
             intelligentPlayingManager.PlayingPaused();
             title.PlayPaused();
         }
@@ -262,27 +262,38 @@ namespace CustomMediaPlayer
             bool? ok = ofd.ShowDialog();
             if (ok == true)
             {
+                StopPlaying();
                 JMediaPlayer.NowPlaying = ofd.FileName;
                 btn_start.IsEnabled = true;
                 mainWindow.Title = JMediaPlayer.FileName;
-                AddToRecentlyOpened(JMediaPlayer.NowPlaying);
+                PlayPause();
             }
         }
 
         private void AddToRecentlyOpened(string FileName)
         {
-            if (!menu_recently_opened.Items.Contains(FileName))
+            MenuItem item = new MenuItem();
+            item.Header = FileName;
+            item.Icon = new Image()
             {
-                MenuItem item = new MenuItem();
-                item.Header = FileName;
-                item.Icon = new Image()
-                {
-                    Source = new BitmapImage(new Uri(@"/img/play2.png", UriKind.Relative)),
-                    Width = 20
-                };
-                item.Click += RecentlyOpenedClick;
+                Source = new BitmapImage(new Uri(@"/img/play2.png", UriKind.Relative)),
+                Width = 20
+            };
+            item.Click += RecentlyOpenedClick;
+
+            if (!RecentlyPlayedListContainsItem(FileName))
+            {
                 menu_recently_opened.Items.Add(item);
             }
+        }
+
+        private bool RecentlyPlayedListContainsItem(String Item)
+        {
+            foreach (MenuItem  historyItem in menu_recently_opened.Items)
+            {
+                if (historyItem.Header.Equals(Item)) return true;
+            }
+            return false;
         }
 
         private void RecentlyOpenedClick(object sender, RoutedEventArgs args)
@@ -392,7 +403,7 @@ namespace CustomMediaPlayer
             else btn_stop.Visibility = Visibility.Visible;
         }
 
-        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+        private void menuitem_settings_Click(object sender, RoutedEventArgs e)
         {
             Settings settingsWindow = new Settings();
             settingsWindow.Show();

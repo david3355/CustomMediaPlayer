@@ -58,6 +58,11 @@ namespace CustomMediaPlayer
             get { return mp.NaturalDuration.TimeSpan; }
         }
 
+        public bool MediaOpened
+        {
+            get { return mp.NaturalDuration.HasTimeSpan; }
+        }
+
         public double MediaLengthInMS
         {
             get { return mp.NaturalDuration.TimeSpan.TotalMilliseconds; }
