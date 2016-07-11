@@ -11,8 +11,8 @@
                         <TextBox Name="txt_jumptime" Width="50" TextAlignment="Center" Margin="3" TextChanged="txt_jumptime_TextChanged"></TextBox>
                         <ComboBox Name="combo_unit" Margin="3" SelectedIndex="0" SelectionChanged="combo_unit_SelectionChanged">
                             <ComboBox.Items>
-                                <ComboBoxItem>sec</ComboBoxItem>
-                                <ComboBoxItem>millisec</ComboBoxItem>
+                                <ComboBoxItem>másodperc</ComboBoxItem>
+                                <ComboBoxItem>ezredmásodperc</ComboBoxItem>
                             </ComboBox.Items>
                         </ComboBox>
                     </StackPanel>
@@ -59,8 +59,8 @@
                                 <TextBox Name="txt_pausetime" Width="50" TextAlignment="Center" Margin="3" TextChanged="txt_pausetime_TextChanged" ToolTip="Gépeléskor minden billentyű leütése után ennyi idő elteltével indul újra a lejátszás"></TextBox>
                                 <ComboBox Name="combo_pauseunit" Margin="3" SelectedIndex="1" SelectionChanged="combo_pauseunit_SelectionChanged"  >
                                     <ComboBox.Items>
-                                        <ComboBoxItem>sec</ComboBoxItem>
-                                        <ComboBoxItem>millisec</ComboBoxItem>
+                                        <ComboBoxItem>másodperc</ComboBoxItem>
+                                        <ComboBoxItem>ezredmásodperc</ComboBoxItem>
                                     </ComboBox.Items>
                                 </ComboBox>
                             </StackPanel>

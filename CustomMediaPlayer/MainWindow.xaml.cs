@@ -289,7 +289,7 @@ namespace CustomMediaPlayer
 
         private bool RecentlyPlayedListContainsItem(String Item)
         {
-            foreach (MenuItem  historyItem in menu_recently_opened.Items)
+            foreach (MenuItem historyItem in menu_recently_opened.Items)
             {
                 if (historyItem.Header.Equals(Item)) return true;
             }
@@ -456,6 +456,15 @@ namespace CustomMediaPlayer
         }
 
         #endregion
+
+        private void mainWindow_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (JMediaPlayer.FileName != null && JMediaPlayer.FileName != String.Empty)
+            {
+                String file = JMediaPlayer.FileName.Split('.')[0];
+                Clipboard.SetText(file);
+            }
+        }
 
 
     }
