@@ -115,8 +115,7 @@ namespace CustomMediaPlayer
             if (JMediaPlayer.NowPlaying == String.Empty) return;
             if (!jmp.Playing)
             {
-                jmp.Play();
-                intelligentPlayingManager.UserStartsPlaying();
+                jmp.Play();                
             }
             else
             {
@@ -175,6 +174,7 @@ namespace CustomMediaPlayer
             slider_time.Value = 0;
             label_time.Content = "00:00:00";
             PlayChanged(null, null);
+            intelligentPlayingManager.MediaEnded();
         }
 
         private void PositionChanged(object sender, EventArgs e)
@@ -198,6 +198,7 @@ namespace CustomMediaPlayer
             img_play.Source = new BitmapImage(new Uri(@"/img/pause.png", UriKind.Relative));
             intelligentPlayingManager.PlayingStarted();
             title.PlayStarted();
+            intelligentPlayingManager.UserStartsPlaying();
         }
 
         private void PlayPaused()

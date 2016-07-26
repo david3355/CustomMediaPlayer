@@ -10,6 +10,7 @@ namespace CustomMediaPlayer
     {
         void PlayingStarted();
         void PlayingPaused();
+        void MediaEnded();
         void JumpedBackward(int MilliSecond);
         void JumpedForward(int MilliSecond);
         void KeyPressed(Keys Key);

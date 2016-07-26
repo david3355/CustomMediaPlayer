@@ -83,6 +83,12 @@ namespace CustomMediaPlayer
             // Implement event handler if necessary
         }
 
+        public void MediaEnded()
+        {
+            if (!enabled) return;
+            userPaused = true;
+        }
+
         public void JumpedBackward(int MilliSecond)
         {
             if (!enabled) return;
