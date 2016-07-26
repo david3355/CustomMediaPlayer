@@ -15,6 +15,7 @@ using Microsoft.Win32;
 using Forms = System.Windows.Forms;
 using System.IO;
 using System.Reflection;
+using PopUp;
 
 namespace CustomMediaPlayer
 {
@@ -463,6 +464,7 @@ namespace CustomMediaPlayer
             {
                 String file = JMediaPlayer.FileName.Split('.')[0];
                 Clipboard.SetText(file);
+                new Popup(String.Format("Title ({0}) copied to clipboard!", file), PopupDuration.SHORT, 300, Color.FromArgb(255, 0, 0, 100), Colors.White).Show();
             }
         }
 
